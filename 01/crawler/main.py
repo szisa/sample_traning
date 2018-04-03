@@ -8,5 +8,9 @@ else:
     from urllib2 import urlopen        # Python 2
 
 
-rsp = urlopen('http://ip.sxisa.com/')
-print(rsp.read())
+def ip():
+    rsp = urlopen('http://ip.sxisa.com/')
+    return rsp.read()
+
+if __name__ == '__main__':
+    print(ip())
