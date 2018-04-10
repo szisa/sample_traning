@@ -1,0 +1,93 @@
+html {
+    min-height: 100%;
+    position: relative;
+}
+body {
+    max-width: 300px;
+    margin: auto;
+    font: 300 1em/1.8 PingFang SC,Lantinghei SC,Microsoft Yahei,Hiragino Sans GB,Microsoft Sans Serif,WenQuanYi Micro Hei,sans;
+    padding: 0 1em;
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo img{
+    width: 100%;
+    max-width: 300px; /*最大宽度不能大于图片宽度*/
+}
+
+:focus {
+    outline: none;
+}
+
+.content .title{
+    text-align: center;
+    font-size: 300%;
+    font-weight: 100;
+}
+
+.input-text {
+    border: none;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    border-bottom: 1px dashed #000;
+    padding: .2em 0;
+}
+
+.submit-btn {
+    -webkit-appearance: none; /* 取出ios系统按钮默认带有的渐变样式 */
+    background-color: #AD190E;
+    color: #FFF;
+    border: 0;
+    width: 100%;
+    font-size: 1.5em;
+    padding: .5em;
+    border-radius: 1.25em;
+}
+
+.submit-btn:hover {
+    cursor: pointer;
+}
+
+.submit-btn:active { /*实现按下时按钮收缩效果*/
+    padding: .45em;
+    margin: .05em;  
+}
+
+.submit-btn[disabled] {
+    background-color: #727272;
+}
+
+.error-msg {
+    display: block;
+    height: 1.5em;
+    color: #AD190E;
+    text-align: center;
+    font-weight: 500;
+}
+
+.tip {
+    text-align: center;
+}
+
+.tip a {
+    color: #CCC;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    color: #CCC;
+    height: 4em;
+}
+
+footer p {
+    font-size: 80%;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+}
