@@ -31,10 +31,9 @@ int loadNickname(const char* szPath, char* szNickname, int nSize)
 	return 0;
 }
 
-int setNickname(const char* szPath) 
+const char* setNickname(const char* szPath, char* szNickname) 
 {
 	FILE *fp = 0;
-	char szNickname[MAX_NAME_LEN] = "";
 	if (!(fp = fopen(szPath, "wb")))
 		return 1;
 	printf("请输入你的名字:");
@@ -42,7 +41,7 @@ int setNickname(const char* szPath)
 	szNickname[MAX_NAME_LEN - 1] = 0;
 	fwrite(szNickname, sizeof(szNickname), 1, fp);
 	fclose(fp);
-	return 0;
+	return szNickname;
 }
 
 struct RECORD guess(char* szNickName)
@@ -66,13 +65,13 @@ struct RECORD guess(char* szNickName)
 		stRecord.nCount++;
 	}
 	stRecord.nCost = time(NULL) - stRecord.tBeginTime;
-	strcpy(stRecord.szName, szNickName);
 	printf("你猜中了！你猜了%d次！\n", stRecord.nCount);
 	if (0 == szNickName || 0 == strlen(szNickName)) 
 	{
 		printf("这是你第一次玩，");
-		setNickname(SETTING_PATH);
+		setNickname(SETTING_PATH, szNickName);	
 	}
+	strcpy(stRecord.szName, szNickName);
 	return stRecord;
 }
 
@@ -113,13 +112,13 @@ int view()
 
 	while(!feof(fp)) 
 	{
-		fscanf(fp, "%d,%d,%d,%ld,%d,%s\r\n",
+		if(fscanf(fp, "%d,%d,%d,%ld,%d,%s\r\n",
 			&stRecord.nRand,
 			&stRecord.nGuess,
 			&stRecord.nCount,
 			&ltime,
 			&stRecord.nCost, 
-			stRecord.szName);
+			stRecord.szName) < 0) continue;
 		stRecord.tBeginTime = (time_t)ltime;
 		localtime_s(&stTime, &stRecord.tBeginTime);
 
@@ -162,7 +161,7 @@ int main()
 		{
 		case '1': save(guess(szNickname)); break;
 		case '2': view(); break;
-		case '3': setNickname(SETTING_PATH); break;
+		case '3': setNickname(SETTING_PATH, szNickname); break;
 		case '4': return 0;
 		default : continue;		
 		}
