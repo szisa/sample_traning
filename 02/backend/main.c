@@ -37,7 +37,7 @@ int setNickname(const char* szPath)
 	char szNickname[MAX_NAME_LEN] = "";
 	if (!(fp = fopen(szPath, "wb")))
 		return 1;
-	printf("Please input your Name:");
+	printf("请输入你的名字:");
 	scanf("%s", szNickname);
 	szNickname[MAX_NAME_LEN - 1] = 0;
 	fwrite(szNickname, sizeof(szNickname), 1, fp);
@@ -70,7 +70,7 @@ struct RECORD guess(char* szNickName)
 	printf("你猜中了！你猜了%d次！\n", stRecord.nCount);
 	if (0 == szNickName || 0 == strlen(szNickName)) 
 	{
-		printf("This is your first play.");
+		printf("这是你第一次玩，");
 		setNickname(SETTING_PATH);
 	}
 	return stRecord;
@@ -81,7 +81,7 @@ int save(struct RECORD stRecord)
 	FILE * fp = NULL;
 	if(!(fp = fopen(RECORD_PATH, "ab")))
 	{
-		printf("Save Record Failed.. \n");
+		printf("保存记录失败.. \n");
 		return 1;
 	}   
 	fseek(fp, SEEK_END, 0); 
@@ -101,17 +101,18 @@ int view()
 {
 	FILE * fp = NULL;
 	struct RECORD stRecord;
+	long ltime = 0;
+	struct tm stTime = {0};
 	if (!(fp = fopen(RECORD_PATH, "rb")))
 	{
-		printf("You must be play first. \n");
+		printf("你还没有玩过呢。 \n");
 		return 1;
 	}   
 
-	printf("Name\tGuess\tCount\tCost\tBegin\n");
+	printf("姓名\t所猜数字\t猜测次数\t花费秒数\t开始时间\n");
 
 	while(!feof(fp)) 
 	{
-		long ltime = 0;
 		fscanf(fp, "%d,%d,%d,%ld,%d,%s\r\n",
 			&stRecord.nRand,
 			&stRecord.nGuess,
@@ -120,12 +121,15 @@ int view()
 			&stRecord.nCost, 
 			stRecord.szName);
 		stRecord.tBeginTime = (time_t)ltime;
-		printf("%s\t%d\t%d\t%d\t%s",
+		localtime_s(&stTime, &stRecord.tBeginTime);
+
+		printf("%s\t%5d   \t%5d   \t%5d   \t%d/%02d/%02d %02d:%02d:%02d",
 			stRecord.szName,
 			stRecord.nGuess,
 			stRecord.nCount,
 			stRecord.nCost,
-			asctime(gmtime(&stRecord.tBeginTime)));
+			stTime.tm_year + 1900, stTime.tm_mon, stTime.tm_mday, 
+			stTime.tm_hour, stTime.tm_min, stTime.tm_sec);
 	}
 	printf("\n\n");
 	fclose(fp);
@@ -135,13 +139,13 @@ int view()
 
 int menu(char* szNickname) {
 	if (szNickname && strlen(szNickname) > 0)
-		printf("Hi! %s! ", szNickname);
-	printf("Welcome to play 'Guess Number'!\n");
+		printf("你好！%s！", szNickname);
+	printf("欢迎来玩『 猜数字 』!\n");
 	printf("\n");
-	printf("1. Begin to Play!\n");
-	printf("2. View the Record!\n");
-	printf("3. Change Nickname!\n");
-	printf("4. Quit the Game!\n");
+	printf("1. 开始游戏！\n");
+	printf("2. 查看历史！\n");
+	printf("3. 更改昵称!\n");
+	printf("4. 退出游戏！\n");
 	printf("\n");
 
 	return getch();
