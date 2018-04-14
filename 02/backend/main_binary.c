@@ -5,8 +5,8 @@
 #include <conio.h>
 
 #define MAX_NAME_LEN 100
-#define SETTING_PATH "setting.txt"
-#define RECORD_PATH "record.txt"
+#define SETTING_PATH "setting.bin"
+#define RECORD_PATH "record.bin"
 
 struct RECORD
 {
@@ -85,13 +85,7 @@ int save(struct RECORD stRecord)
 	}   
 	fseek(fp, SEEK_END, 0); 
 
-	fprintf(fp, "%d,%d,%d,%ld,%d,%s\r\n", 
-		stRecord.nRand, 
-		stRecord.nGuess, 
-		stRecord.nCount, 
-		(long)stRecord.tBeginTime, 
-		stRecord.nCost, 
-		stRecord.szName);
+	fwrite(&stRecord, sizeof(struct RECORD), 1, fp);
 	fclose(fp);
 	return 0;
 }
@@ -100,7 +94,6 @@ int view()
 {
 	FILE * fp = NULL;
 	struct RECORD stRecord;
-	long ltime = 0;
 	struct tm stTime = {0};
 	if (!(fp = fopen(RECORD_PATH, "rb")))
 	{
@@ -112,14 +105,8 @@ int view()
 
 	while(!feof(fp)) 
 	{
-		if(fscanf(fp, "%d,%d,%d,%ld,%d,%s\r\n",
-			&stRecord.nRand,
-			&stRecord.nGuess,
-			&stRecord.nCount,
-			&ltime,
-			&stRecord.nCost, 
-			stRecord.szName) < 0) continue;
-		stRecord.tBeginTime = (time_t)ltime;
+		if(fread(&stRecord, sizeof(struct RECORD), 1, fp) <= 0) 
+			continue;
 		localtime_s(&stTime, &stRecord.tBeginTime);
 
 		printf("%s\t%5d   \t%5d   \t%5d   \t%d/%02d/%02d %02d:%02d:%02d\n",
